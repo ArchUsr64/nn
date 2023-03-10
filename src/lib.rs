@@ -236,4 +236,41 @@ impl Matrix {
 			col: elements[0].len(),
 		}
 	}
+	pub fn with_size(row: usize, col: usize) -> Self {
+		Self {
+			elements: vec![vec![0.5; col]; row],
+			row,
+			col,
+		}
+	}
+}
+
+#[derive(Clone)]
+pub struct NN {
+	layers: Vec<Matrix>,
+}
+
+impl NN {
+	pub fn new(neuron_count: &[usize]) -> Self {
+		assert!(neuron_count.len() >= 2);
+		Self {
+			layers: neuron_count
+				.windows(2)
+				.map(|a| Matrix::with_size(a[0], a[1]))
+				.collect(),
+		}
+	}
+	pub fn forward_prop(&self, input: Matrix) -> Matrix {
+		let mut result = input;
+		for layer in &self.layers {
+			result *= layer.clone();
+		}
+		result
+	}
+}
+
+impl fmt::Debug for NN {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		todo!()
+	}
 }

@@ -1,9 +1,7 @@
-use nn::Matrix;
+use nn::{Matrix, NN};
 
 fn main() {
-	let m1 = Matrix::new(&[vec![1., 2.], vec![3., 4.]]);
-	let mut m2 = Matrix::new(&[vec![5., 6.], vec![7., 8.]]);
-	m2 *= m1;
-
-	println!("{m2:?}");
+	let network = NN::new(&[2, 5, 1]);
+	let result = network.forward_prop(Matrix::new(&[vec![1., 0.5]]));
+	println!("{result:?}");
 }
