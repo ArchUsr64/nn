@@ -103,7 +103,7 @@ impl ops::Mul for Matrix {
 		}
 		Self {
 			row: self.row,
-			col: self.col,
+			col: rhs.col,
 			elements,
 		}
 	}
