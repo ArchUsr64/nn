@@ -243,6 +243,16 @@ impl Matrix {
 			col,
 		}
 	}
+	pub fn map<F>(&mut self, f: F)
+	where
+		F: Fn(f32) -> f32,
+	{
+		for row in self.elements.iter_mut() {
+			for element in row.iter_mut() {
+				*element = f(*element);
+			}
+		}
+	}
 }
 
 #[derive(Clone)]
@@ -256,16 +266,26 @@ impl NN {
 		Self {
 			layers: neuron_count
 				.windows(2)
-				.map(|a| Matrix::with_size(a[0], a[1]))
+				.map(|a| Matrix::with_size(a[0] + 1, a[1]))
 				.collect(),
 		}
 	}
-	pub fn forward_prop(&self, input: Matrix) -> Matrix {
-		let mut result = input;
+	pub fn forward_prop(&self, input: &[f32]) -> Matrix {
+		let mut result = Matrix::new(&[{
+			let mut vec = input.to_vec();
+			vec.push(1.);
+			vec
+		}]);
 		for layer in &self.layers {
+			println!("Result: {result:?}");
+			println!("Layer: {layer:?}");
 			result *= layer.clone();
+			let relu = |x| if x > 0. { x } else { 0. };
+			result.map(relu)
 		}
 		result
+	}
+	pub fn back_prop(&mut self, input: Matrix, desired_output: Matrix, learning_rate: f32) {
 	}
 }
 
